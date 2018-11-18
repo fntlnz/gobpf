@@ -169,7 +169,8 @@ func (bpf *Module) LoadTracepoint(name string) (int, error) {
 
 // LoadRawTracepoint loads a program of type BPF_PROG_TYPE_RAW_TRACEPOINT
 func (bpf *Module) LoadRawTracepoint(name string) (int, error) {
-	return bpf.Load(name, C.BPF_PROG_TYPE_RAW_TRACEPOINT, 0, 0)
+	return 0, fmt.Errorf("BPF_PROG_TYPE_RAW_TRACEPOINT not supported")
+	//return bpf.Load(name, C.BPF_PROG_TYPE_RAW_TRACEPOINT, 0, 0)
 }
 
 // LoadPerfEvent loads a program of type BPF_PROG_TYPE_PERF_EVENT
@@ -298,21 +299,7 @@ func (bpf *Module) AttachTracepoint(name string, fd int) error {
 // AttachRawTracepoint attaches a raw tracepoint fd to a function
 // The 'name' argument is in the format 'name', there is no category
 func (bpf *Module) AttachRawTracepoint(name string, fd int) error {
-	if _, ok := bpf.rawTracepoints[name]; ok {
-		return nil
-	}
-
-	tpNameCS := C.CString(name)
-
-	res, err := C.bpf_attach_raw_tracepoint(C.int(fd), tpNameCS)
-
-	C.free(unsafe.Pointer(tpNameCS))
-
-	if res < 0 {
-		return fmt.Errorf("failed to attach BPF tracepoint: %v", err)
-	}
-	bpf.rawTracepoints[name] = int(res)
-	return nil
+	return fmt.Errorf("bpf_attach_raw_tracepoint not supported")
 }
 
 // AttachPerfEvent attaches a perf event fd to a function
